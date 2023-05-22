@@ -1,22 +1,39 @@
 import React from "react";
+import useEscapeKey from "../../hooks/useEscape";
 
 export const ToastContext = React.createContext();
-const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
+export const VARIANT_OPTIONS = ['notice', 'warning', 'success', 'error'];
 
 function ToastProvider({ children }) {
 
   const [toasts, setToasts] = React.useState([]);
 
-  const handleDismiss = (id) => {
-    console.log(id)
+  const dismissToast = (id) => {
     setToasts(toasts.filter(elem => elem.id !== id))
   }
 
+  const createToast = (variant, message) => {
 
-  console.log(toasts)
+    const id = Date.now()
+    setToasts([
+      ...toasts,
+      {
+        id,
+        variant,
+        message
+      }
+    ])
+  }
+
+  const handleEscape = React.useCallback(() => {
+    setToasts([])
+  }, [])
+  useEscapeKey(handleEscape)
 
   return (
-    <ToastContext.Provider value="asldj">
+    <ToastContext.Provider value={{
+      toasts, createToast, dismissToast
+    }}>
       {children}
     </ToastContext.Provider>
   );
