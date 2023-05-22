@@ -1,18 +1,18 @@
 import React from 'react';
 
+import { createPortal } from 'react-dom';
 import Toast from '../Toast';
 import styles from './ToastShelf.module.css';
 
-function ToastShelf() {
-  return (
+function ToastShelf({ toasts, handleDismiss }) {
+  return createPortal(
     <ol className={styles.wrapper}>
-      <li className={styles.toastWrapper}>
-        <Toast variant="notice">Example notice toast</Toast>
-      </li>
-      <li className={styles.toastWrapper}>
-        <Toast variant="error">Example error toast</Toast>
-      </li>
-    </ol>
+      {toasts.map(({ id, variant, message }) => (
+        <li key={id} className={styles.toastWrapper}>
+          <Toast id={id} variant={variant} handleDismiss={handleDismiss}>{message}</Toast>
+        </li>))}
+    </ol>,
+    document.body
   );
 }
 
